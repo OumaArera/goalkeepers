@@ -245,7 +245,7 @@ export default function Goalkeepers() {
 
                       {/* View Profile Button */}
                       <a
-                        href={`/goalkeepers/${gk.full_name.toLowerCase().replace(/\s+/g, "-")}`}
+                        href={`/goalkeepers/${gk.id}`}
                         className="block w-full py-3 text-center bg-linear-to-r from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-xl text-orange-400 font-bold hover:from-orange-500/20 hover:to-red-500/20 transition-all duration-300"
                       >
                         View Full Profile
