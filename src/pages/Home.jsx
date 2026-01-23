@@ -135,7 +135,7 @@ export default function Homepage() {
                     <img
                       src={featuredGoalkeeper?.avatar}
                       alt={featuredGoalkeeper?.name}
-                      className="relative h-20 w-20 object-cover rounded-full border-2 border-white shadow-xl"
+                      className="relative h-20 w-20 object-fit rounded-full border-2 border-white shadow-xl"
                     />
                   </div>
                   <div>
@@ -238,7 +238,7 @@ export default function Homepage() {
                     <img
                       src={player.avatar}
                       alt={player.name}
-                      className="relative h-16 w-16 object-cover rounded-full border-2 border-white"
+                      className="relative h-16 w-16 object-fit rounded-full border-2 border-white"
                     />
                   </div>
                   <div className="flex-1">
