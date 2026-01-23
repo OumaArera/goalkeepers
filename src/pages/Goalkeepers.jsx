@@ -180,11 +180,11 @@ export default function Goalkeepers() {
                     className="group relative bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-orange-500/20 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-105"
                   >
                     {/* Card Header */}
-                    <div className="relative h-48 bg-linear-to-br from-orange-500/20 to-red-500/20">
+                    <div className="relative h-108 bg-linear-to-br from-orange-500/20 to-red-500/20">
                       <img
                         src={gk.avatar}
                         alt={gk.full_name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-fit"
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}
@@ -215,7 +215,7 @@ export default function Goalkeepers() {
                         <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                           <span>Age: {getAge(gk.date_of_birth)}</span>
                           <span>•</span>
-                          <span>Height: {gk.height}m</span>
+                          <span>Height: {gk.height}ft</span>
                         </div>
                       </div>
 

@@ -171,7 +171,7 @@ export default function Homepage() {
                 </div>
                 
                 <a
-                  href={`/goalkeepers/${featuredGoalkeeper?.slug}`}
+                  href={`/goalkeepers/${featuredGoalkeeper?.id}`}
                   className="block w-full py-3 text-center bg-linear-to-r from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-xl text-orange-400 font-bold hover:bg-linear-to-r hover:from-orange-500/20 hover:to-red-500/20 transition-all duration-300"
                 >
                   View Full Profile

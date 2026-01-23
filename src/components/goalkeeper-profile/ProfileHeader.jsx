@@ -1,5 +1,5 @@
 // src/components/goalkeeper-profile/ProfileHeader.jsx
-import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp } from "lucide-react";
+import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp, Scale, Zap  } from "lucide-react";
 
 export default function ProfileHeader({ player, clubs, awards, stats, matchesPlayed, cleanSheetRate }) {
   const club = clubs?.[0];
@@ -36,7 +36,7 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                 <img
                   src={player.avatar}
                   alt={player.full_name}
-                  className="w-full aspect-square object-cover rounded-2xl border-4 border-orange-500/20 shadow-2xl"
+                  className="w-full h-96 aspect-square object-cover rounded-2xl border-4 border-orange-500/20 shadow-2xl"
                   onError={(e) => {
                     e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
                   }}
@@ -74,7 +74,7 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-orange-500/20 p-4 hover:border-orange-500/50 transition-all">
                 <Calendar className="text-orange-500 mb-2" size={24} />
                 <div className="text-2xl font-black text-white">{getAge(player.date_of_birth)}</div>
@@ -82,9 +82,21 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
               </div>
               <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-orange-500/20 p-4 hover:border-orange-500/50 transition-all">
                 <Ruler className="text-orange-500 mb-2" size={24} />
-                <div className="text-2xl font-black text-white">{player.height}m</div>
+                <div className="text-2xl font-black text-white">{player.height}ft</div>
                 <div className="text-sm text-gray-400">Height</div>
               </div>
+              <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-orange-500/20 p-4 hover:border-orange-500/50 transition-all">
+                <Scale className="text-orange-500 mb-2" size={24} />
+                <div className="text-2xl font-black text-white">{player.weight || "N/A"}kg</div>
+                <div className="text-sm text-gray-400">Weight</div>
+              </div>
+
+              <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-orange-500/20 p-4 hover:border-orange-500/50 transition-all">
+                <Zap className="text-orange-500 mb-2" size={24} />
+                <div className="text-2xl font-black text-white">{player.preferred_foot || "N/A"}</div>
+                <div className="text-sm text-gray-400">Preferred Foot</div>
+              </div>
+
               <div className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-orange-500/20 p-4 hover:border-orange-500/50 transition-all">
                 <MapPin className="text-orange-500 mb-2" size={24} />
                 <div className="text-2xl font-black text-white">{player.country_of_residence}</div>
