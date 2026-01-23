@@ -8,6 +8,9 @@ import GoalkeeperProfile from './pages/GoalkeeperProfile';
 import AboutAllianceKenya from './pages/About';
 import Clubs from './pages/Clubs';
 import AwardsPage from './pages/Awards';
+import Rankings from './pages/Rankings';
+import Contact from './pages/Contact';
+import PrivacyPolicy from './pages/PrivacyPage';
 
 function App() {
 
@@ -23,8 +26,9 @@ function App() {
             <Route path="/about" element={<AboutAllianceKenya />} />
             <Route path="/clubs" element={<Clubs />} />
             <Route path="/awards" element={<AwardsPage />} />
-            {/* <Route path="/leagues" element={<Leagues />} /> */}
-            {/* <Route path="/game-tickets" element={<Tickets />} />  */}
+            <Route path="/rankings" element={<Rankings />} />
+            <Route path="/contact" element={<Contact />} /> 
+            <Route path="/privacy" element={<PrivacyPolicy />} /> 
           </Routes>
         </main>
         <Footer />

@@ -24,7 +24,6 @@ export default function Homepage() {
     const getPlayers = async () => {
         const response = await getData("players/");
         const results = response?.data?.results || [];
-        console.log("Res: ", JSON.stringify(results))
         setPlayers(results);
 
         // Randomize from returned 10 players

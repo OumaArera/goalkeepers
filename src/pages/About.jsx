@@ -49,34 +49,22 @@ export default function AboutAllianceKenya() {
 
   const timeline = [
     {
-      year: "2020",
+      year: "2025",
       title: "The Beginning",
       description: "Founded by passionate goalkeepers who saw the need for specialized training in Kenya",
       icon: Sparkles
     },
     {
-      year: "2021",
+      year: "2025",
       title: "First Academy",
       description: "Launched our first goalkeeper academy in Nairobi with 50 aspiring shot-stoppers",
       icon: Shield
     },
     {
-      year: "2022",
-      title: "National Recognition",
-      description: "Partnered with Kenya Premier League clubs and gained FKF recognition",
-      icon: Trophy
-    },
-    {
-      year: "2023",
+      year: "2025",
       title: "Digital Platform",
       description: "Launched our comprehensive digital platform for stats tracking and scouting",
       icon: Activity
-    },
-    {
-      year: "2024",
-      title: "International Partnerships",
-      description: "Established partnerships with European clubs and goalkeeper academies",
-      icon: Globe
     },
     {
       year: "2025",
@@ -88,23 +76,23 @@ export default function AboutAllianceKenya() {
 
   const testimonials = [
     {
-      name: "David Ochieng",
-      role: "Professional Goalkeeper - Gor Mahia",
-      image: "https://via.placeholder.com/100x100?text=DO",
+      name: "Fredrick Otinda",
+      role: "Professional Goalkeeper - Posta Rangers",
+      image: "/fredrick.png",
       quote: "The Alliance transformed my career. Their training programs and analytics helped me understand my game at a deeper level. Now I'm playing in the Premier League.",
       rating: 5
     },
     {
-      name: "Sarah Wanjiku",
-      role: "U19 National Team Goalkeeper",
-      image: "https://via.placeholder.com/100x100?text=SW",
+      name: "Humphrey Katasi",
+      role: "Professional Goalkeeper - AFC Leopards",
+      image: "/humphrey_katasi.jpeg",
       quote: "As a young female goalkeeper, finding proper training was difficult. The Alliance gave me the platform, support, and opportunities I needed to shine.",
       rating: 5
     },
     {
-      name: "Michael Otieno",
-      role: "Goalkeeper Coach - Tusker FC",
-      image: "https://via.placeholder.com/100x100?text=MO",
+      name: "Stephen Ochieng' Otieno",
+      role: "Goalkeeper Coach - Shabana FC",
+      image: "/ochieng_stephen.jpeg",
       quote: "The level of professionalism and dedication to developing goalkeepers is unmatched. They're raising the standard of goalkeeping in Kenya.",
       rating: 5
     }
