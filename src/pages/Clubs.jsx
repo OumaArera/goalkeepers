@@ -7,6 +7,7 @@ import ClubsHeader from "../components/clubs/ClubsHeader";
 import ClubsFilters from "../components/clubs/ClubsFilters";
 import ClubsGrid from "../components/clubs/ClubsGrid";
 import ClubsStats from "../components/clubs/ClubsStats";
+import Pagination from "../components/common/Pagination";
 
 export default function Clubs() {
   const [clubs, setClubs] = useState([]);
@@ -16,20 +17,37 @@ export default function Clubs() {
   const [filterCity, setFilterCity] = useState("");
   const [filterYear, setFilterYear] = useState("");
   const [sortBy, setSortBy] = useState("name"); 
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [previousPageUrl, setPreviousPageUrl] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
 
   useEffect(() => {
     fetchClubs();
   }, []);
 
-  const fetchClubs = async () => {
+  useEffect(() => {
+    // Update items per page based on screen size
+    const updateItemsPerPage = () => {
+      setItemsPerPage(window.innerWidth < 768 ? 2 : 3);
+    };
+    
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
+  const fetchClubs = async (url = "clubs/") => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getData("clubs/");
+      const response = await getData(url);
       const data = response?.data;
       
       if (data && data.results) {
         setClubs(data.results);
+        setNextPageUrl(data.next);
+        setPreviousPageUrl(data.previous);
       } else {
         setError("No clubs data available");
       }
@@ -64,6 +82,40 @@ export default function Clubs() {
     }
   });
 
+  // Client-side pagination
+  const totalPages = Math.ceil(sortedClubs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedClubs = sortedClubs.slice(startIndex, endIndex);
+
+  const handlePageChange = async (newPage) => {
+    // Check if we need to fetch more data from API
+    if (newPage > totalPages && nextPageUrl) {
+      // Extract the page parameter from the next URL
+      const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
+      const pageParam = urlParams.get('page');
+      const endpoint = `clubs/?page=${pageParam}`;
+      
+      await fetchClubs(endpoint);
+      setCurrentPage(1); // Reset to first page of new data
+    } else if (newPage < 1 && previousPageUrl) {
+      // Extract the page parameter from the previous URL
+      const urlParams = new URLSearchParams(previousPageUrl.split('?')[1]);
+      const pageParam = urlParams.get('page');
+      const endpoint = pageParam ? `clubs/?page=${pageParam}` : 'clubs/';
+      
+      await fetchClubs(endpoint);
+      setCurrentPage(1);
+    } else {
+      setCurrentPage(newPage);
+    }
+  };
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCity, filterYear, sortBy]);
+
   // Get unique values for filters
   const uniqueCities = [...new Set(clubs.map(club => club.city))].sort();
   const uniqueYears = [...new Set(clubs.map(club => club.founded_year))].sort((a, b) => b - a);
@@ -78,6 +130,8 @@ export default function Clubs() {
       </div>
     );
   }
+
+
 
   if (error) {
     return (
@@ -122,7 +176,16 @@ export default function Clubs() {
       />
 
       {/* Clubs Grid */}
-      <ClubsGrid clubs={sortedClubs} />
+      <ClubsGrid clubs={paginatedClubs} />
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        hasNextApiPage={!!nextPageUrl}
+        hasPreviousApiPage={!!previousPageUrl}
+        loading={loading}
+      />
     </div>
   );
 }
