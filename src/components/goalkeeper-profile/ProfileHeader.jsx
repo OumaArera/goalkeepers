@@ -69,7 +69,7 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                     <span className="text-gray-500">•</span>
                   </>
                 )}
-                <span className="text-gray-400">{player.country_of_birth}</span>
+                <span className="text-gray-400">{player.country_of_residence}</span>
               </div>
             </div>
 

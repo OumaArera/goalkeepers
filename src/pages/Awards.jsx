@@ -58,7 +58,7 @@ export default function AwardsPage() {
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b border-orange-500/20">
+      {/* <section className="relative overflow-hidden border-b border-orange-500/20">
         <div className="absolute inset-0 bg-linear-to-br from-orange-600/10 via-slate-950 to-red-600/10"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
@@ -78,7 +78,7 @@ export default function AwardsPage() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Filter Section */}
       <section className="relative border-b border-orange-500/20">

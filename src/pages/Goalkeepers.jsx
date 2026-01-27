@@ -65,13 +65,13 @@ export default function Goalkeepers() {
   const filteredGoalkeepers = allGoalkeepers.filter(gk => {
     const matchesSearch = gk.full_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClub = !filterClub || gk.clubs?.some(club => club.name === filterClub);
-    const matchesCountry = !filterCountry || gk.country_of_birth === filterCountry;
+    const matchesCountry = !filterCountry || gk.country_of_residence === filterCountry;
     return matchesSearch && matchesClub && matchesCountry;
   });
 
   // Get unique values for filters from all fetched goalkeepers
   const uniqueClubs = [...new Set(allGoalkeepers.flatMap(gk => gk.clubs?.map(club => club.name) || []))].filter(Boolean).sort();
-  const uniqueCountries = [...new Set(allGoalkeepers.map(gk => gk.country_of_birth).filter(Boolean))].sort();
+  const uniqueCountries = [...new Set(allGoalkeepers.map(gk => gk.country_of_residence).filter(Boolean))].sort();
 
   // Client-side pagination based on total count
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -121,7 +121,7 @@ export default function Goalkeepers() {
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <GoalkeepersHeader totalCount={totalCount} />
+      {/* <GoalkeepersHeader totalCount={totalCount} /> */}
 
       {/* Filters */}
       <GoalkeepersFilters

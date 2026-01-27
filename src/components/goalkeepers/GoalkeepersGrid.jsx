@@ -61,7 +61,7 @@ export default function GoalkeepersGrid({ goalkeepers }) {
                   {gk.clubs && gk.clubs.length > 0 ? gk.clubs[0].name : "Free Agent"}
                 </span>
                 <span className="text-gray-500">•</span>
-                <span className="text-gray-400">{gk.country_of_birth}</span>
+                <span className="text-gray-400">{gk.country_of_residence}</span>
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                 <span>Age: {getAge(gk.date_of_birth)}</span>

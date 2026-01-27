@@ -39,7 +39,7 @@ export default function Clubs() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const fetchClubs = async (url = "clubs/", appendData = false) => {
+  const fetchClubs = async (url = "clubs/?page_size=60", appendData = false) => {
     setLoading(true);
     setError(null);
     try {
@@ -112,7 +112,7 @@ export default function Clubs() {
       // Extract the page parameter from the next URL
       const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
       const pageParam = urlParams.get('page');
-      const endpoint = `clubs/?page=${pageParam}`;
+      const endpoint = `clubs/?page=${pageParam}&page_size=60`;
       
       const newPageNum = parseInt(pageParam);
       if (!fetchedPages.has(newPageNum)) {
@@ -162,7 +162,7 @@ export default function Clubs() {
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <ClubsHeader totalClubs={totalClubs} />
+      {/* <ClubsHeader totalClubs={totalClubs} /> */}
 
       {/* Stats Overview */}
       <ClubsStats 
