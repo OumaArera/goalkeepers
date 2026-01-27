@@ -7,8 +7,7 @@ import GoalkeepersFilters from "../components/goalkeepers/GoalkeepersFilters";
 import GoalkeepersGrid from "../components/goalkeepers/GoalkeepersGrid";
 
 export default function Goalkeepers() {
-  const [goalkeepers, setGoalkeepers] = useState([]);
-  const [allGoalkeepers, setAllGoalkeepers] = useState([]); // Store all fetched goalkeepers
+  const [allGoalkeepers, setAllGoalkeepers] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,11 +43,11 @@ export default function Goalkeepers() {
       if (appendData) {
         // Append new data to existing goalkeepers
         setAllGoalkeepers(prev => [...prev, ...(data?.results || [])]);
-        setGoalkeepers(prev => [...prev, ...(data?.results || [])]);
+        // setGoalkeepers(prev => [...prev, ...(data?.results || [])]);
       } else {
         // Initial load or reset
         setAllGoalkeepers(data?.results || []);
-        setGoalkeepers(data?.results || []);
+        // setGoalkeepers(data?.results || []);
         setFetchedPages(new Set([1]));
       }
       

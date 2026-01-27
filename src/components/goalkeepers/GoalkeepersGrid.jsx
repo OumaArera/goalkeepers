@@ -31,7 +31,7 @@ export default function GoalkeepersGrid({ goalkeepers }) {
           className="group relative bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-orange-500/20 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-105"
         >
           {/* Card Header */}
-          <div className="relative h-64 bg-slate-950 flex items-center justify-center overflow-hidden">
+          <div className="relative h-64  flex items-center justify-center overflow-hidden">
 
             <img
                 src={gk.avatar}
@@ -41,8 +41,6 @@ export default function GoalkeepersGrid({ goalkeepers }) {
                     e.target.style.display = "none";
                 }}
             />
-
-            <div className="absolute inset-0 bg-linear-to-t from-slate-900 to-transparent"></div>
             
             {/* Awards Badge */}
             {gk.awards && gk.awards.length > 0 && (
