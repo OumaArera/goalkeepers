@@ -1,8 +1,8 @@
 import { MapPin, Calendar, Home, Trophy } from "lucide-react";
 
-export default function ClubsStats({ clubs }) {
+export default function ClubsStats({ clubs, totalClubs }) {
   // Calculate stats
-  const totalClubs = clubs.length;
+  // const totalClubs = clubs.length;
   const uniqueCities = [...new Set(clubs.map(club => club.city))].length;
   const oldestClub = clubs.length > 0 ? Math.min(...clubs.map(club => club.founded_year)) : 0;
   const avgFoundedYear = clubs.length > 0 

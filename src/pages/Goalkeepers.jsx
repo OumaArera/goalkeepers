@@ -8,6 +8,7 @@ import GoalkeepersGrid from "../components/goalkeepers/GoalkeepersGrid";
 
 export default function Goalkeepers() {
   const [goalkeepers, setGoalkeepers] = useState([]);
+  const [allGoalkeepers, setAllGoalkeepers] = useState([]); // Store all fetched goalkeepers
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +18,7 @@ export default function Goalkeepers() {
   const [filterClub, setFilterClub] = useState("");
   const [filterCountry, setFilterCountry] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [fetchedPages, setFetchedPages] = useState(new Set([1])); // Track fetched API pages
 
   useEffect(() => {
     fetchGoalkeepers();
@@ -33,13 +35,23 @@ export default function Goalkeepers() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const fetchGoalkeepers = async (url = "players/") => {
+  const fetchGoalkeepers = async (url = "players/", appendData = false) => {
     setLoading(true);
     try {
       const response = await getData(url);
       const data = response?.data;
       
-      setGoalkeepers(data?.results || []);
+      if (appendData) {
+        // Append new data to existing goalkeepers
+        setAllGoalkeepers(prev => [...prev, ...(data?.results || [])]);
+        setGoalkeepers(prev => [...prev, ...(data?.results || [])]);
+      } else {
+        // Initial load or reset
+        setAllGoalkeepers(data?.results || []);
+        setGoalkeepers(data?.results || []);
+        setFetchedPages(new Set([1]));
+      }
+      
       setTotalCount(data?.count || 0);
       setNextPageUrl(data?.next);
       setPreviousPageUrl(data?.previous);
@@ -50,48 +62,45 @@ export default function Goalkeepers() {
     }
   };
 
-  // Filter goalkeepers
-  const filteredGoalkeepers = goalkeepers.filter(gk => {
+  // Filter goalkeepers from all fetched data
+  const filteredGoalkeepers = allGoalkeepers.filter(gk => {
     const matchesSearch = gk.full_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClub = !filterClub || gk.clubs?.some(club => club.name === filterClub);
     const matchesCountry = !filterCountry || gk.country_of_birth === filterCountry;
     return matchesSearch && matchesClub && matchesCountry;
   });
 
-  // Get unique values for filters
-  const uniqueClubs = [...new Set(goalkeepers.flatMap(gk => gk.clubs?.map(club => club.name) || []))].filter(Boolean).sort();
-  const uniqueCountries = [...new Set(goalkeepers.map(gk => gk.country_of_birth).filter(Boolean))].sort();
+  // Get unique values for filters from all fetched goalkeepers
+  const uniqueClubs = [...new Set(allGoalkeepers.flatMap(gk => gk.clubs?.map(club => club.name) || []))].filter(Boolean).sort();
+  const uniqueCountries = [...new Set(allGoalkeepers.map(gk => gk.country_of_birth).filter(Boolean))].sort();
 
-  // Client-side pagination
-  const totalPages = Math.ceil(filteredGoalkeepers.length / itemsPerPage);
+  // Client-side pagination based on total count
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedGoalkeepers = filteredGoalkeepers.slice(startIndex, endIndex);
 
   const handlePageChange = async (newPage) => {
+    // Calculate if we have the data needed for this page
+    const neededDataIndex = newPage * itemsPerPage;
+    const currentDataLength = allGoalkeepers.length;
+    
     // Check if we need to fetch more data from API
-    if (newPage > totalPages && nextPageUrl) {
+    if (neededDataIndex > currentDataLength && nextPageUrl) {
       // Extract the page parameter from the next URL
       const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
       const pageParam = urlParams.get('page');
       const endpoint = `players/?page=${pageParam}`;
       
-      await fetchGoalkeepers(endpoint);
-      setCurrentPage(1); // Reset to first page of new data
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (newPage < 1 && previousPageUrl) {
-      // Extract the page parameter from the previous URL
-      const urlParams = new URLSearchParams(previousPageUrl.split('?')[1]);
-      const pageParam = urlParams.get('page');
-      const endpoint = pageParam ? `players/?page=${pageParam}` : 'players/';
-      
-      await fetchGoalkeepers(endpoint);
-      setCurrentPage(1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const newPageNum = parseInt(pageParam);
+      if (!fetchedPages.has(newPageNum)) {
+        await fetchGoalkeepers(endpoint, true);
+        setFetchedPages(prev => new Set([...prev, newPageNum]));
+      }
     }
+    
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Reset to first page when filters change

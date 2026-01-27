@@ -10,17 +10,19 @@ import ClubsStats from "../components/clubs/ClubsStats";
 import Pagination from "../components/common/Pagination";
 
 export default function Clubs() {
-  const [clubs, setClubs] = useState([]);
+  const [allClubs, setAllClubs] = useState([]);
+  const [totalClubs, setTotalClubs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCity, setFilterCity] = useState("");
   const [filterYear, setFilterYear] = useState("");
-  const [sortBy, setSortBy] = useState("name"); 
+  const [sortBy, setSortBy] = useState("name");
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [previousPageUrl, setPreviousPageUrl] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [fetchedPages, setFetchedPages] = useState(new Set([1]));
 
   useEffect(() => {
     fetchClubs();
@@ -37,7 +39,7 @@ export default function Clubs() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const fetchClubs = async (url = "clubs/") => {
+  const fetchClubs = async (url = "clubs/", appendData = false) => {
     setLoading(true);
     setError(null);
     try {
@@ -45,9 +47,17 @@ export default function Clubs() {
       const data = response?.data;
       
       if (data && data.results) {
-        setClubs(data.results);
+        if (appendData) {
+          // Append new data to existing clubs
+          setAllClubs(prev => [...prev, ...data.results]);
+        } else {
+          // Initial load or reset
+          setAllClubs(data.results);
+          setFetchedPages(new Set([1]));
+        }
         setNextPageUrl(data.next);
         setPreviousPageUrl(data.previous);
+        setTotalClubs(data?.count || 0);
       } else {
         setError("No clubs data available");
       }
@@ -59,8 +69,8 @@ export default function Clubs() {
     }
   };
 
-  // Filter clubs
-  const filteredClubs = clubs.filter(club => {
+  // Filter clubs from all fetched data
+  const filteredClubs = allClubs.filter(club => {
     const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         club.short_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCity = !filterCity || club.city === filterCity;
@@ -82,33 +92,37 @@ export default function Clubs() {
     }
   });
 
-  // Client-side pagination
-  const totalPages = Math.ceil(sortedClubs.length / itemsPerPage);
+  // Get unique values for filters from all fetched clubs
+  const uniqueCities = [...new Set(allClubs.map(club => club.city))].sort();
+  const uniqueYears = [...new Set(allClubs.map(club => club.founded_year))].sort((a, b) => b - a);
+
+  // Client-side pagination based on total count
+  const totalPages = Math.ceil(totalClubs / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedClubs = sortedClubs.slice(startIndex, endIndex);
 
   const handlePageChange = async (newPage) => {
+    // Calculate if we have the data needed for this page
+    const neededDataIndex = newPage * itemsPerPage;
+    const currentDataLength = allClubs.length;
+    
     // Check if we need to fetch more data from API
-    if (newPage > totalPages && nextPageUrl) {
+    if (neededDataIndex > currentDataLength && nextPageUrl) {
       // Extract the page parameter from the next URL
       const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
       const pageParam = urlParams.get('page');
       const endpoint = `clubs/?page=${pageParam}`;
       
-      await fetchClubs(endpoint);
-      setCurrentPage(1); // Reset to first page of new data
-    } else if (newPage < 1 && previousPageUrl) {
-      // Extract the page parameter from the previous URL
-      const urlParams = new URLSearchParams(previousPageUrl.split('?')[1]);
-      const pageParam = urlParams.get('page');
-      const endpoint = pageParam ? `clubs/?page=${pageParam}` : 'clubs/';
-      
-      await fetchClubs(endpoint);
-      setCurrentPage(1);
-    } else {
-      setCurrentPage(newPage);
+      const newPageNum = parseInt(pageParam);
+      if (!fetchedPages.has(newPageNum)) {
+        await fetchClubs(endpoint, true); // Append new data
+        setFetchedPages(prev => new Set([...prev, newPageNum]));
+      }
     }
+    
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Reset to first page when filters change
@@ -116,11 +130,7 @@ export default function Clubs() {
     setCurrentPage(1);
   }, [searchTerm, filterCity, filterYear, sortBy]);
 
-  // Get unique values for filters
-  const uniqueCities = [...new Set(clubs.map(club => club.city))].sort();
-  const uniqueYears = [...new Set(clubs.map(club => club.founded_year))].sort((a, b) => b - a);
-
-  if (loading) {
+  if (loading && allClubs.length === 0) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
@@ -131,8 +141,6 @@ export default function Clubs() {
     );
   }
 
-
-
   if (error) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -141,7 +149,7 @@ export default function Clubs() {
           <h2 className="text-2xl font-bold text-white mb-2">{error}</h2>
           <p className="text-gray-400 mb-6">Unable to load clubs data</p>
           <button
-            onClick={fetchClubs}
+            onClick={() => fetchClubs()}
             className="px-6 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold hover:shadow-lg transition-all"
           >
             Try Again
@@ -154,10 +162,13 @@ export default function Clubs() {
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      <ClubsHeader totalClubs={clubs.length} />
+      <ClubsHeader totalClubs={totalClubs} />
 
       {/* Stats Overview */}
-      <ClubsStats clubs={clubs} />
+      <ClubsStats 
+        clubs={allClubs} 
+        totalClubs={totalClubs} 
+      />
 
       {/* Filters */}
       <ClubsFilters
@@ -172,11 +183,12 @@ export default function Clubs() {
         uniqueCities={uniqueCities}
         uniqueYears={uniqueYears}
         filteredCount={sortedClubs.length}
-        totalCount={clubs.length}
+        totalCount={totalClubs}
       />
 
       {/* Clubs Grid */}
       <ClubsGrid clubs={paginatedClubs} />
+
       {/* Pagination */}
       <Pagination
         currentPage={currentPage}

@@ -6,7 +6,8 @@ export default function Pagination({
   onPageChange,
   hasNextApiPage = false,
   hasPreviousApiPage = false,
-  loading = false
+  loading = false,
+  totalCount=100
 }) {
   const canGoPrevious = currentPage > 1 || hasPreviousApiPage;
   const canGoNext = currentPage < totalPages || hasNextApiPage;
