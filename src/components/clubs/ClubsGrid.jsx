@@ -1,4 +1,4 @@
-import { MapPin, Calendar, Home, Shield, ChevronRight } from "lucide-react";
+import { MapPin, Calendar, Home, Shield, ChevronRight, Users } from "lucide-react";
 
 export default function ClubsGrid({ clubs }) {
   const calculateAge = (foundedYear) => {
@@ -93,16 +93,19 @@ export default function ClubsGrid({ clubs }) {
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Status Badge */}
-                {club.is_active && (
-                  <div className="pt-3 border-t border-orange-500/20">
-                    <span className="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs font-bold">
-                      Active Partner
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-orange-500/10 rounded-lg">
+                      <Users className="text-orange-500" size={16} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-gray-400 text-xs">Category</div>
+                      <div className="text-white font-semibold text-sm">
+                        {club.category || "N/A"}
+                      </div>
+                    </div>
                   </div>
-                )}
+                </div>
 
                 {/* View Details Button */}
                 <button className="w-full py-3 bg-linear-to-r from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-xl text-orange-400 font-bold hover:from-orange-500/20 hover:to-red-500/20 transition-all duration-300 flex items-center justify-center gap-2">

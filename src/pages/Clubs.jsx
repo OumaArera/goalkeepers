@@ -3,7 +3,6 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { getData } from "../api/api.service";
 
 // Import child components
-import ClubsHeader from "../components/clubs/ClubsHeader";
 import ClubsFilters from "../components/clubs/ClubsFilters";
 import ClubsGrid from "../components/clubs/ClubsGrid";
 import ClubsStats from "../components/clubs/ClubsStats";
@@ -23,10 +22,14 @@ export default function Clubs() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [fetchedPages, setFetchedPages] = useState(new Set([1]));
+  const [filterCategory, setFilterCategory] = useState("");
+
 
   useEffect(() => {
-    fetchClubs();
-  }, []);
+    setCurrentPage(1);
+    fetchClubs({ page: 1, appendData: false });
+  }, [searchTerm, filterCity, filterYear, filterCategory, sortBy]);
+
 
   useEffect(() => {
     // Update items per page based on screen size
@@ -39,28 +42,46 @@ export default function Clubs() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const fetchClubs = async (url = "clubs/?page_size=60", appendData = false) => {
+  const buildQueryParams = ({ page = 1 } = {}) => {
+    const params = new URLSearchParams();
+
+    params.append("page", page);
+    params.append("page_size", 60);
+
+    if (searchTerm) params.append("search", searchTerm);
+    if (filterCity) params.append("city", filterCity);
+    if (filterYear) params.append("founded_year", filterYear);
+    if (filterCategory) params.append("category", filterCategory);
+    if (sortBy) params.append("ordering", sortBy);
+
+    return `clubs/?${params.toString()}`;
+  };
+
+
+  const fetchClubs = async ({ page = 1, appendData = false } = {}) => {
     setLoading(true);
     setError(null);
+
     try {
-      const response = await getData(url);
+      const endpoint = buildQueryParams({ page });
+      const response = await getData(endpoint);
       const data = response?.data;
-      
-      if (data && data.results) {
-        if (appendData) {
-          // Append new data to existing clubs
-          setAllClubs(prev => [...prev, ...data.results]);
-        } else {
-          // Initial load or reset
-          setAllClubs(data.results);
-          setFetchedPages(new Set([1]));
-        }
-        setNextPageUrl(data.next);
-        setPreviousPageUrl(data.previous);
-        setTotalClubs(data?.count || 0);
-      } else {
+
+      if (!data?.results) {
         setError("No clubs data available");
+        return;
       }
+
+      if (appendData) {
+        setAllClubs(prev => [...prev, ...data.results]);
+      } else {
+        setAllClubs(data.results);
+        setFetchedPages(new Set([page]));
+      }
+
+      setNextPageUrl(data.next);
+      setPreviousPageUrl(data.previous);
+      setTotalClubs(data.count || 0);
     } catch (err) {
       console.error("Error fetching clubs:", err);
       setError("Failed to load clubs");
@@ -68,6 +89,7 @@ export default function Clubs() {
       setLoading(false);
     }
   };
+
 
   // Filter clubs from all fetched data
   const filteredClubs = allClubs.filter(club => {
@@ -103,27 +125,22 @@ export default function Clubs() {
   const paginatedClubs = sortedClubs.slice(startIndex, endIndex);
 
   const handlePageChange = async (newPage) => {
-    // Calculate if we have the data needed for this page
     const neededDataIndex = newPage * itemsPerPage;
-    const currentDataLength = allClubs.length;
-    
-    // Check if we need to fetch more data from API
-    if (neededDataIndex > currentDataLength && nextPageUrl) {
-      // Extract the page parameter from the next URL
-      const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
-      const pageParam = urlParams.get('page');
-      const endpoint = `clubs/?page=${pageParam}&page_size=60`;
-      
-      const newPageNum = parseInt(pageParam);
-      if (!fetchedPages.has(newPageNum)) {
-        await fetchClubs(endpoint, true); // Append new data
-        setFetchedPages(prev => new Set([...prev, newPageNum]));
+
+    if (neededDataIndex > allClubs.length && nextPageUrl) {
+      const urlParams = new URLSearchParams(nextPageUrl.split("?")[1]);
+      const pageParam = Number(urlParams.get("page"));
+
+      if (!fetchedPages.has(pageParam)) {
+        await fetchClubs({ page: pageParam, appendData: true });
+        setFetchedPages(prev => new Set([...prev, pageParam]));
       }
     }
-    
+
     setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -161,8 +178,6 @@ export default function Clubs() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Header */}
-      {/* <ClubsHeader totalClubs={totalClubs} /> */}
 
       {/* Stats Overview */}
       <ClubsStats 
@@ -174,6 +189,8 @@ export default function Clubs() {
       <ClubsFilters
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        filterCategory={filterCategory}
+        setFilterCategory={setFilterCategory}
         filterCity={filterCity}
         setFilterCity={setFilterCity}
         filterYear={filterYear}

@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { getData } from "../api/api.service";
 import Pagination from "../components/common/Pagination";
-import GoalkeepersHeader from "../components/goalkeepers/GoalkeepersHeader";
 import GoalkeepersFilters from "../components/goalkeepers/GoalkeepersFilters";
 import GoalkeepersGrid from "../components/goalkeepers/GoalkeepersGrid";
+import { COUNTRIES } from "../constants/countries";
+
 
 export default function Goalkeepers() {
   const [allGoalkeepers, setAllGoalkeepers] = useState([]); 
@@ -17,11 +18,30 @@ export default function Goalkeepers() {
   const [filterClub, setFilterClub] = useState("");
   const [filterCountry, setFilterCountry] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(3);
-  const [fetchedPages, setFetchedPages] = useState(new Set([1])); // Track fetched API pages
+  const [fetchedPages, setFetchedPages] = useState(new Set([1]));
+  const [filterSex, setFilterSex] = useState("");
+  const [filterBirthCountry, setFilterBirthCountry] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+
 
   useEffect(() => {
-    fetchGoalkeepers();
-  }, []);
+    setCurrentPage(1);
+
+    const query = buildQueryParams();
+    const endpoint = query
+      ? `players/?${query}`
+      : "players/";
+
+    fetchGoalkeepers(endpoint, false);
+  }, [
+    searchTerm,
+    filterSex,
+    filterBirthCountry,
+    filterCountry
+  ]);
+
+
 
   useEffect(() => {
     // Update items per page based on screen size
@@ -34,23 +54,34 @@ export default function Goalkeepers() {
     return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
-  const fetchGoalkeepers = async (url = "players/", appendData = false) => {
+  const buildQueryParams = () => {
+    const params = new URLSearchParams();
+
+    if (searchTerm) params.append("search", searchTerm);
+    if (filterSex) params.append("sex", filterSex);
+    if (filterBirthCountry) params.append("country_of_birth", filterBirthCountry);
+    if (filterCountry) params.append("country_of_residence", filterCountry);
+
+    return params.toString();
+  };
+
+
+  const fetchGoalkeepers = async (
+    url = "players/",
+    appendData = false
+  ) => {
     setLoading(true);
     try {
       const response = await getData(url);
       const data = response?.data;
-      
+
       if (appendData) {
-        // Append new data to existing goalkeepers
         setAllGoalkeepers(prev => [...prev, ...(data?.results || [])]);
-        // setGoalkeepers(prev => [...prev, ...(data?.results || [])]);
       } else {
-        // Initial load or reset
         setAllGoalkeepers(data?.results || []);
-        // setGoalkeepers(data?.results || []);
         setFetchedPages(new Set([1]));
       }
-      
+
       setTotalCount(data?.count || 0);
       setNextPageUrl(data?.next);
       setPreviousPageUrl(data?.previous);
@@ -60,6 +91,8 @@ export default function Goalkeepers() {
       setLoading(false);
     }
   };
+
+
 
   // Filter goalkeepers from all fetched data
   const filteredGoalkeepers = allGoalkeepers.filter(gk => {
@@ -71,7 +104,7 @@ export default function Goalkeepers() {
 
   // Get unique values for filters from all fetched goalkeepers
   const uniqueClubs = [...new Set(allGoalkeepers.flatMap(gk => gk.clubs?.map(club => club.name) || []))].filter(Boolean).sort();
-  const uniqueCountries = [...new Set(allGoalkeepers.map(gk => gk.country_of_residence).filter(Boolean))].sort();
+  // const uniqueCountries = [...new Set(allGoalkeepers.map(gk => gk.country_of_residence).filter(Boolean))].sort();
 
   // Client-side pagination based on total count
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -80,27 +113,32 @@ export default function Goalkeepers() {
   const paginatedGoalkeepers = filteredGoalkeepers.slice(startIndex, endIndex);
 
   const handlePageChange = async (newPage) => {
-    // Calculate if we have the data needed for this page
     const neededDataIndex = newPage * itemsPerPage;
     const currentDataLength = allGoalkeepers.length;
-    
-    // Check if we need to fetch more data from API
+
     if (neededDataIndex > currentDataLength && nextPageUrl) {
-      // Extract the page parameter from the next URL
-      const urlParams = new URLSearchParams(nextPageUrl.split('?')[1]);
-      const pageParam = urlParams.get('page');
-      const endpoint = `players/?page=${pageParam}`;
-      
-      const newPageNum = parseInt(pageParam);
+      const query = buildQueryParams();
+
+      const urlParams = new URLSearchParams(nextPageUrl.split("?")[1]);
+      const pageParam = urlParams.get("page");
+
+      const endpoint = query
+        ? `players/?page=${pageParam}&${query}`
+        : `players/?page=${pageParam}`;
+
+      const newPageNum = parseInt(pageParam, 10);
+
       if (!fetchedPages.has(newPageNum)) {
         await fetchGoalkeepers(endpoint, true);
         setFetchedPages(prev => new Set([...prev, newPageNum]));
       }
     }
-    
+
     setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -121,21 +159,26 @@ export default function Goalkeepers() {
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
-      {/* <GoalkeepersHeader totalCount={totalCount} /> */}
 
       {/* Filters */}
       <GoalkeepersFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+        onSearch={() => setSearchTerm(searchInput)}
         filterClub={filterClub}
         setFilterClub={setFilterClub}
         filterCountry={filterCountry}
         setFilterCountry={setFilterCountry}
+        filterSex={filterSex}
+        setFilterSex={setFilterSex}
+        filterBirthCountry={filterBirthCountry}
+        setFilterBirthCountry={setFilterBirthCountry}
         uniqueClubs={uniqueClubs}
-        uniqueCountries={uniqueCountries}
+        countries={COUNTRIES}
         filteredCount={filteredGoalkeepers.length}
         totalCount={totalCount}
       />
+
 
       {/* Goalkeepers Grid */}
       <section className="relative py-12">

@@ -1,14 +1,20 @@
 import { Search, Filter } from "lucide-react";
 
 export default function GoalkeepersFilters({
-  searchTerm,
-  setSearchTerm,
+  
+  searchInput,
+  setSearchInput,
+  onSearch,
   filterClub,
   setFilterClub,
   filterCountry,
   setFilterCountry,
+  filterSex,
+  setFilterSex,
+  filterBirthCountry,
+  setFilterBirthCountry,
   uniqueClubs,
-  uniqueCountries,
+  countries,
   filteredCount,
   totalCount
 }) {
@@ -22,11 +28,46 @@ export default function GoalkeepersFilters({
             <input
               type="text"
               placeholder="Search by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onSearch();
+                }
+              }}
               className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/50 transition-colors"
             />
+
           </div>
+          <div className="relative">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <select
+              value={filterSex}
+              onChange={(e) => setFilterSex(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white focus:outline-none focus:border-orange-500/50 transition-colors appearance-none cursor-pointer"
+            >
+              <option value="">All Sex</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div className="relative">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <select
+              value={filterBirthCountry}
+              onChange={(e) => setFilterBirthCountry(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white focus:outline-none focus:border-orange-500/50 transition-colors appearance-none cursor-pointer"
+            >
+              <option value="">Country of Birth</option>
+              {countries.map(country => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
 
           {/* Club Filter */}
           <div className="relative">
@@ -52,10 +93,13 @@ export default function GoalkeepersFilters({
               className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white focus:outline-none focus:border-orange-500/50 transition-colors appearance-none cursor-pointer"
             >
               <option value="">All Countries</option>
-              {uniqueCountries.map(country => (
-                <option key={country} value={country}>{country}</option>
+              {countries.map(country => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
               ))}
             </select>
+
           </div>
         </div>
 

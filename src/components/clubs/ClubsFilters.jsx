@@ -4,6 +4,8 @@ export default function ClubsFilters({
   searchTerm,
   setSearchTerm,
   filterCity,
+  filterCategory,
+  setFilterCategory,
   setFilterCity,
   filterYear,
   setFilterYear,
@@ -28,6 +30,19 @@ export default function ClubsFilters({
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/50 transition-colors"
             />
+          </div>
+          <div className="relative">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-slate-950 border border-orange-500/20 rounded-xl text-white focus:outline-none"
+            >
+              <option value="">All Categories</option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Mixed">Mixed</option>
+            </select>
           </div>
 
           {/* City Filter */}

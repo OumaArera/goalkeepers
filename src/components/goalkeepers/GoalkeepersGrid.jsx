@@ -1,4 +1,4 @@
-import { Shield, Award } from "lucide-react";
+import { Shield, Award, AlertCircle } from "lucide-react";
 
 export default function GoalkeepersGrid({ goalkeepers }) {
   const getAge = (dob) => {
@@ -42,6 +42,14 @@ export default function GoalkeepersGrid({ goalkeepers }) {
                 }}
             />
             
+            {/* Injury Badge */}
+            {gk.injured && (
+              <div className="absolute top-4 left-4 px-3 py-1 bg-red-600 rounded-full flex items-center gap-1">
+                <AlertCircle className="text-white" size={14} />
+                <span className="text-white text-xs font-bold">Injured</span>
+              </div>
+            )}
+            
             {/* Awards Badge */}
             {gk.awards && gk.awards.length > 0 && (
               <div className="absolute top-4 right-4 px-3 py-1 bg-linear-to-r from-orange-500 to-red-500 rounded-full flex items-center gap-1">
@@ -67,7 +75,14 @@ export default function GoalkeepersGrid({ goalkeepers }) {
                 <span>Age: {getAge(gk.date_of_birth)}</span>
                 <span>•</span>
                 <span>Height: {gk.height}ft</span>
+                <span>•</span>
+                <span>{gk.sex}</span>
               </div>
+              {gk.injured && (
+                <div className="mt-2 px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <p className="text-xs text-red-400 font-semibold">Out of session due to injury</p>
+                </div>
+              )}
             </div>
 
             {/* Key Stats */}

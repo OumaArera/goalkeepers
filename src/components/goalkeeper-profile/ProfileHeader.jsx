@@ -1,5 +1,5 @@
 // src/components/goalkeeper-profile/ProfileHeader.jsx
-import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp, Scale, Zap  } from "lucide-react";
+import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp, Scale, Zap, AlertCircle, User  } from "lucide-react";
 
 export default function ProfileHeader({ player, clubs, awards, stats, matchesPlayed, cleanSheetRate }) {
   const club = clubs?.[0];
@@ -41,6 +41,13 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                     e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
                   }}
                 />
+                {/* Injury Badge */}
+                {player.injured && (
+                  <div className="absolute top-12 left-12 px-4 py-2 bg-red-600 rounded-full flex items-center gap-2 shadow-lg">
+                    <AlertCircle className="text-white" size={18} />
+                    <span className="text-white font-black">Injured</span>
+                  </div>
+                )}
                 {awards && awards.length > 0 && (
                   <div className="absolute top-12 right-12 px-4 py-2 bg-linear-to-r from-orange-500 to-red-500 rounded-full flex items-center gap-2 shadow-lg">
                     <Award className="text-white" size={18} />
@@ -71,6 +78,15 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                 )}
                 <span className="text-gray-400">{player.country_of_residence}</span>
               </div>
+              {/* Injury Status Alert */}
+              {player.injured && (
+                <div className="mt-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <p className="text-sm text-red-400 font-semibold flex items-center gap-2">
+                    <AlertCircle size={16} />
+                    Out of session due to injury
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Quick Stats Grid */}
@@ -157,6 +173,10 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                 <div>
                   <span className="text-gray-400">Country of Birth:</span>
                   <span className="text-white font-semibold ml-2">{player.country_of_birth}</span>
+                </div>
+                <div>
+                  <span className="text-gray-400">Sex:</span>
+                  <span className="text-white font-semibold ml-2">{player.sex || "N/A"}</span>
                 </div>
                 {club && (
                   <>

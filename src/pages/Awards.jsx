@@ -57,29 +57,7 @@ export default function AwardsPage() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Hero Section */}
-      {/* <section className="relative overflow-hidden border-b border-orange-500/20">
-        <div className="absolute inset-0 bg-linear-to-br from-orange-600/10 via-slate-950 to-red-600/10"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-          <div className="text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-full">
-              <Trophy className="text-orange-500" size={16} />
-              <span className="text-orange-400 text-sm font-bold">Celebrating Excellence</span>
-            </div>
-            
-            <h1 className="text-5xl lg:text-6xl font-black text-white leading-tight">
-              Awards & <span className="bg-linear-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">Recognition</span>
-            </h1>
-            
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-              Honoring Kenya's finest goalkeepers for their outstanding performances, 
-              dedication, and contribution to the sport.
-            </p>
-          </div>
-        </div>
-      </section> */}
-
+      
       {/* Filter Section */}
       <section className="relative border-b border-orange-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

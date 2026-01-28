@@ -1,0 +1,26 @@
+// src/constants/countries.js
+export const COUNTRIES = [
+  "Kenya",
+  "Uganda",
+  "Tanzania",
+  "Rwanda",
+  "Burundi",
+  "Ethiopia",
+  "South Sudan",
+  "Nigeria",
+  "Ghana",
+  "South Africa",
+  "Egypt",
+  "Morocco",
+  "United States",
+  "United Kingdom",
+  "Germany",
+  "France",
+  "Spain",
+  "Italy",
+  "Brazil",
+  "Argentina",
+  "Portugal",
+  "Zambia",
+  "South Africa"
+];
