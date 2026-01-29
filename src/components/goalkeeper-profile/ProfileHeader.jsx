@@ -1,8 +1,8 @@
-// src/components/goalkeeper-profile/ProfileHeader.jsx
-import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp, Scale, Zap, AlertCircle, User  } from "lucide-react";
+import { Award, Calendar, Ruler, MapPin, Shield, Users, TrendingUp, Scale, Zap, AlertCircle  } from "lucide-react";
 
 export default function ProfileHeader({ player, clubs, awards, stats, matchesPlayed, cleanSheetRate }) {
   const club = clubs?.[0];
+  const playStyles = player?.play_styles || [];
 
   const getAge = (dob) => {
     if (!dob) return "N/A";
@@ -192,13 +192,26 @@ export default function ProfileHeader({ player, clubs, awards, stats, matchesPla
                       <span className="text-gray-400">City:</span>
                       <span className="text-white font-semibold ml-2">{club.city}, {club.country}</span>
                     </div>
-                    <div>
-                      <span className="text-gray-400">Founded:</span>
-                      <span className="text-white font-semibold ml-2">{club.founded_year}</span>
-                    </div>
                   </>
                 )}
               </div>
+
+              {/* Play Styles Section */}
+              {playStyles && playStyles.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-orange-500/20">
+                  <h4 className="text-sm font-bold text-white mb-3">Play Styles:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {playStyles.map((style) => (
+                      <span
+                        key={style.id}
+                        className="px-4 py-2 bg-linear-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-full text-orange-400 text-sm font-semibold hover:from-orange-500/30 hover:to-red-500/30 transition-all"
+                      >
+                        {style.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

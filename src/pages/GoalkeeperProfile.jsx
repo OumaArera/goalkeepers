@@ -1,4 +1,3 @@
-// src/pages/GoalkeeperProfile.jsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
@@ -11,6 +10,7 @@ import PerformanceGraphs from "../components/goalkeeper-profile/PerformanceGraph
 import TrainingLoad from "../components/goalkeeper-profile/TrainingLoad";
 import ClubHistory from "../components/goalkeeper-profile/ClubHistory";
 import AwardsSection from "../components/goalkeeper-profile/AwardsSection";
+import AppearancesSection from "../components/goalkeeper-profile/AppearancesSection";
 
 export default function GoalkeeperProfile() {
   const { id } = useParams();
@@ -71,7 +71,10 @@ export default function GoalkeeperProfile() {
     );
   }
 
-  const { player, analytics, clubs, awards } = data;
+  const { player, analytics } = data;
+  const clubs = player?.clubs;
+  const awards = player?.awards;
+  const appearances = player?.appearances;
   const goalkeeperStats = analytics?.goalkeeper || {};
 
   return (
@@ -115,6 +118,11 @@ export default function GoalkeeperProfile() {
           averages={analytics.training_load.averages}
           sessions={analytics.training_load.sessions}
         />
+      )}
+
+      {/* Appearances */}
+      {appearances && appearances.length > 0 && (
+        <AppearancesSection appearances={appearances} />
       )}
 
       {/* Club History */}

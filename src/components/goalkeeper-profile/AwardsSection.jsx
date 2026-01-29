@@ -1,4 +1,3 @@
-// src/components/goalkeeper-profile/AwardsSection.jsx
 import { Trophy, Award, Calendar, Clock } from "lucide-react";
 
 export default function AwardsSection({ awards = [] }) {
@@ -8,23 +7,11 @@ export default function AwardsSection({ awards = [] }) {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'APPROVED': return 'text-green-400 bg-green-500/10 border-green-500/30';
-      case 'PENDING': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30';
-      case 'REJECTED': return 'text-red-400 bg-red-500/10 border-red-500/30';
-      default: return 'text-gray-400 bg-gray-500/10 border-gray-500/30';
-    }
-  };
-
   // Sort awards by date (most recent first)
   const sortedAwards = [...awards].sort((a, b) => 
     new Date(b.award_date) - new Date(a.award_date)
   );
 
-  // Count awards by status
-  const approvedCount = awards.filter(a => a.status === 'APPROVED').length;
-  const pendingCount = awards.filter(a => a.status === 'PENDING').length;
 
   return (
     <section className="relative py-12">
