@@ -59,10 +59,10 @@ export default function Header() {
           {/* CTA with gradient and icon */}
           <div className="hidden md:flex">
             <a
-              href="/goalkeepers"
+              href="/goalkeeper/register"
               className="relative group bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl text-sm font-black hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 hover:scale-105 flex items-center gap-2 overflow-hidden"
             >
-              <span className="relative z-10">Explore Goalkeepers</span>
+              <span className="relative z-10">Join the Alliance</span>
               <ChevronRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform" />
               <div className="absolute inset-0 bg-linear-to-r from-red-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </a>
@@ -97,11 +97,11 @@ export default function Header() {
               </a>
             ))}
             <a
-              href="/goalkeepers"
+              href="/goalkeeper/register"
               className="mt-4 bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-3.5 rounded-xl text-sm font-black text-center hover:shadow-xl hover:shadow-orange-500/50 transition-all duration-300 flex items-center justify-center gap-2"
               onClick={() => setOpen(false)}
             >
-              Explore Goalkeepers
+              Join the Alliance
               <ChevronRight size={16} />
             </a>
           </nav>

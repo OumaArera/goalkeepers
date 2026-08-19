@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './components/Header';
 import Footer from './components/Footer';
+import DonateWidget from './components/common/DonateWidget';
 import Homepage from './pages/Home';
 import Goalkeepers from './pages/Goalkeepers';
 import GoalkeeperProfile from './pages/GoalkeeperProfile';
@@ -11,6 +12,7 @@ import AwardsPage from './pages/Awards';
 import Rankings from './pages/Rankings';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPage';
+import NewPlayer from './pages/NewPlayer';
 
 function App() {
 
@@ -29,9 +31,11 @@ function App() {
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/contact" element={<Contact />} /> 
             <Route path="/privacy" element={<PrivacyPolicy />} /> 
+            <Route path="/goalkeeper/register" element={<NewPlayer />} /> 
           </Routes>
         </main>
         <Footer />
+        <DonateWidget />
       </div>
     </Router>
 

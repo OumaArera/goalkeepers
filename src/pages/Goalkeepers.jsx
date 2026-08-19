@@ -56,7 +56,7 @@ export default function Goalkeepers() {
 
   const buildQueryParams = () => {
     const params = new URLSearchParams();
-
+    + params.append("is_active", "true");
     if (searchTerm) params.append("search", searchTerm);
     if (filterSex) params.append("sex", filterSex);
     if (filterBirthCountry) params.append("country_of_birth", filterBirthCountry);

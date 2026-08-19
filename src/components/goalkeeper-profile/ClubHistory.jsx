@@ -18,12 +18,6 @@ export default function ClubHistory({ clubs = [] }) {
               key={club.id}
               className="group relative bg-slate-900/50 backdrop-blur-sm rounded-2xl border border-orange-500/20 p-6 hover:border-orange-500/50 transition-all hover:scale-105"
             >
-              {/* Active Badge */}
-              {club.is_active && (
-                <div className="absolute top-4 right-4 px-3 py-1 bg-linear-to-r from-green-500 to-emerald-500 rounded-full">
-                  <span className="text-white text-xs font-black">CURRENT</span>
-                </div>
-              )}
 
               {/* Club Logo & Name */}
               <div className="flex items-center gap-4 mb-6">
